@@ -29,19 +29,7 @@ class Filament(ABC):
     def __post_init__(self):
         if self.weight < 0:
             raise ValueError("Вес не может быть отрицательным!")
-"""
-        @property
-        def weight(self):
-            return self._weight
-
-        @weight.setter
-        def weight(self, value):
-            if value > 0:
-                self._weight = value
-            else:
-                return None
-            pass 
-"""        
+     
 
 class PLA_Filament(Filament):
     def __init__(self, type, color, weight, temp, is_biodegradable):
@@ -50,25 +38,28 @@ class PLA_Filament(Filament):
     def dry(self, hours):
         print(f"Сушим PLA {hours} часов при 45 градусах")
 
+@dataclass
+class Nozzle:
+    diameter: float
+    material: str
+
+@dataclass
 class Printer:
-    def __init__(self):
-        pass
+    name: str
+    nozzle: Nozzle
     def print_model(self, filament, grams):
         if filament.use(grams):
             print("printing is started!")
         else: 
             None
+    def __str__(self):
+        return f"Принтер {self.name} с соплом {self.nozzle.diameter} ({self.nozzle.material})"
 
     
-#my_filament = Filament("PETG", "transparent", 1000, 230)
+
 my_PLA = PLA_Filament("PLA", "grey", 1000, 215, True)
+my_nozzle = Nozzle(0.4, "brass")
+my_printer = Printer("kobra S1", my_nozzle)
+print(my_printer)
 
-my_bad_PLA = PLA_Filament("PLA", "grey", -1000, 215, True)
-
-my_printer = Printer()
-
-my_PLA.weight = -500
-
-print(my_PLA)
-print(my_bad_PLA)
 
