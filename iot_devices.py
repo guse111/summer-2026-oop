@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 class DeviceError(Exception):
     pass
@@ -23,7 +23,7 @@ class SmartDevice(ABC):
         
 @dataclass
 class SmartBulb(SmartDevice):
-    brightness: int = 0
+    brightness: int = 80
     def toggle(self):
         if self.is_on: 
             self.is_on = False
@@ -32,6 +32,7 @@ class SmartBulb(SmartDevice):
             self.is_on = True
             print(f"Лампочка {self.name} загорелась с яркостью {self.brightness}%")
     def __post_init__(self):
+        super().__post_init__()
         if self.brightness not in range(0,101):
             raise DeviceError( f"Яркость лампочки {self.name} вышла за пределы 0-100 ({self.brightness})")
 
@@ -48,4 +49,31 @@ class SmartSocket(SmartDevice):
 
 my_lamp_1 = SmartBulb("lamp_1")
 my_soket_1 = SmartSocket("soket_1", False, 50)
-print(my_soket_1)
+my_soket_2 = SmartSocket("soket_2", False, 50)
+
+
+@dataclass
+class SmartHome():
+    devices: list = field(default_factory=list)
+    def add_device(self, device: SmartDevice):
+        self.devices.append(device)
+
+    def status(self):
+        for device in self.devices:
+            print(device)
+    def turn_all_off(self):
+        for device in self.devices:
+            if device.is_on:
+                device.toggle()
+
+my_home = SmartHome()
+
+try:
+    bad_lamp = SmartBulb("bad", brightness=150)
+except DeviceError as e:
+    print(f"Ошибка: {e}")
+
+my_home.add_device(my_lamp_1)
+my_home.add_device(my_soket_1)
+my_home.status()
+my_home.turn_all_off()
