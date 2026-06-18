@@ -1,6 +1,9 @@
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 
+
+class FilamentError(Exception):
+    pass
 @dataclass
 class Filament(ABC):
 
@@ -20,8 +23,7 @@ class Filament(ABC):
             self.weight -= grams
             return True
         else:
-            print(f"Not enough filament")
-            return False
+            raise FilamentError(f"Не хватает пластика! Нужно {grams}г, есть {self.weight}г")
     def __str__(self):
         return f"Катушка {self.type} ({self.color}), осталось {self.weight}г"
     
@@ -48,10 +50,12 @@ class Printer:
     name: str
     nozzle: Nozzle
     def print_model(self, filament, grams):
-        if filament.use(grams):
-            print("printing is started!")
-        else: 
-            None
+        try:
+            if filament.use(grams):
+                print("printing is started!")
+        except FilamentError as e:
+            print(f"Ошибка принтера: {e}")
+    
     def __str__(self):
         return f"Принтер {self.name} с соплом {self.nozzle.diameter} ({self.nozzle.material})"
 
@@ -60,6 +64,7 @@ class Printer:
 my_PLA = PLA_Filament("PLA", "grey", 1000, 215, True)
 my_nozzle = Nozzle(0.4, "brass")
 my_printer = Printer("kobra S1", my_nozzle)
-print(my_printer)
+
+my_printer.print_model(my_PLA, 100)
 
 
