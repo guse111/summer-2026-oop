@@ -33,26 +33,6 @@ print(my_string2.count_sentences())
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #9
 #Задание: Определить класс квадратной матрицы. Два конструктора: по размеру (со случайными числами) и копированием. Предусмотреть функции вычисления детерминанта и умножения матрицы на чис
 #np.info(np.linalg.matmul)
@@ -159,4 +139,4 @@ print((my_list2.data))
 print(my_list.difference(my_list2).data)
 
 #print(my_list.difference(my_list2).sum_of_elements())
-# """
+"""
